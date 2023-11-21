@@ -11,18 +11,66 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Assignment 4
 
-Libraries
+Loading the necessary libraries
+
+```{r warning=FALSE, message=FALSE}
+library(dplyr)
+library(knitr)
+```
+
+Define the path for the original datasets to access, add year & party columns, and clean them:
+```{r}
+base_path <- "C:/Users/alvar/OneDrive/Documents/GitHub/text-as-data-assignments/data"
+democrats_2012 <- read.csv(file.path(base_path, "Democrats_2012_11.csv"))
+democrats_2016 <- read.csv(file.path(base_path, "Democrats_2016_11.csv"))
+democrats_2020 <- read.csv(file.path(base_path, "Democrats_2020_11.csv"))
+republicans_2012 <- read.csv(file.path(base_path, "Republicans_2012_11.csv"))
+republicans_2016 <- read.csv(file.path(base_path, "Republicans_2016_11.csv"))
+republicans_2020 <- read.csv(file.path(base_path, "Republicans_2020_11.csv"))
+
+democrats_2012$Election <- '2012_11'
+democrats_2016$Election <- '2016_11'
+democrats_2020$Election <- '2020_11'
+democrats_2012$Party <- 'Democrats'
+democrats_2016$Party <- 'Democrats'
+democrats_2020$Party <- 'Democrats'
+
+republicans_2012$Election <- '2012_11'
+republicans_2016$Election <- '2016_11'
+republicans_2020$Election <- '2020_11'
+republicans_2012$Party <- 'Republicans'
+republicans_2016$Party <- 'Republicans'
+republicans_2020$Party <- 'Republicans'
+```
+
+Merge all datasets into one and view the combined dataset:
+```{r, warning=FALSE}
+all_data <- rbind(democrats_2012, democrats_2016, democrats_2020, republicans_2012, republicans_2016, republicans_2020)
+knitr::kable(head(all_data, 10), caption = "First 10 Rows of the Combined Dataset")
+```
+
+**#Question 1**
+
+"1. Data acquisition, description, and preparation
+Bring together a dataset from the WZB.
+What years, countries and parties are included in the dataset? How many texts do you have for each of these?
+Prepare your data for topic modelling by creating a document feature matrix. Describe the choices you make
+here, and comment on how these might affect your final result."
+
+```{r echo=FALSE, message=FALSE}
+# Group by Party and Election, then summarize
+summary_table <- all_data %>%
+  group_by(Party, Election) %>%
+  summarize(
+    Total_Entries = n(), # Count total number of entries
+    Unique_Topics = length(unique(cmp_code)) # Count unique cmp_code values
+  ) %>%
+  ungroup() # Remove the grouping
+
+# Display the table in R Markdown
+knitr::kable(summary_table, caption = "Summary of Data by Party and Election of USA ", format = "markdown")
+```
 
 ```{r}
-library(dplyr)
+
 ```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
